@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block body_block %}
+
+<!-- list all published posts -->
+<div class="centerstage">
+  {% if post_list %}
+  {% for post in post_list %}
+  <div class="post">
+    <h1><a href="{% url 'app:post_details' pk=post.pk %}"> {{ post.title }} </a></h1>
+    <div class="date">
+      <p>published on {{post.published_date|date:"D M Y"}}</p>
+    </div>
+    <div class="jumbotron">
+      <a class="btn btn-primary" href="{% url 'app:post_details' pk=post.pk %}"> Comments: {{ post.approve_comments.count }} </a>
+      {% if post.getlatestcomment %}
+      <p> {{ post.getlatestcomment.text|safe}} </p>
+      {% endif %}
+      <hr class="my-4">
+    </div>
+  </div>
+  {% endfor %}
+  {% else %}
+  <a href="{% url 'app:post_new' %}"> <button type="button" class="btn btn-primary" name="button">Add your first post</button> </a>
+  {% endif %}
+</div>
+{% endblock %}

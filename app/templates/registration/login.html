@@ -1,0 +1,23 @@
+{% extends 'app/base.html' %}
+
+{% block body_block %}
+
+<div class="">
+  <h1>Login to your account!</h1>
+  <h3>Must be a superuser, please check with the team!</h3>
+
+  {% if form.errors %}
+  <p>Login failed, please try again!</p>
+  {% endif %}
+
+  <form action="{% url 'login' %}" method="POST">
+    {% csrf_token %}
+    {{form.as_p}}
+    <input type="submit" name="submit" value="submit">
+    <input hidden type="hidden" name="next" value="{{next}}">
+  </form>
+
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block body_block %}
+
+<h1 class="posttitle loader">{{post.title}}</h1>
+
+{% if post.published_date %}
+
+<div class="date postdate">
+  {{post.published_date}}
+</div>
+{% else %}
+<a class="btn btn-primary" href="{% url 'app:post_publish' pk=post.pk %}"> Publish </a>
+{% endif %}
+
+<p class="postcontent"> {{post.text|safe|linebreaks}} </p>
+
+<!-- allow edit, delete if loggedin -->
+{% if user.is_authenticated %}
+<a class="btn btn-primary" href="{% url 'app:post_edit' pk=post.pk %}"> <span class="glyphicon glyphicon-pencil"></span> edit </a>
+<a class="btn btn-primary" href="{% url 'app:post_delete' pk=post.pk %}"> <span class="glyphicon glyphicon-remove"></span> delete </a>
+{% endif %}
+
+<hr>
+
+<!-- approved comments section -->
+<div class=" d-flex justify-content-between">
+  <div class="container ml-auto">
+    {% for comment in post.comments.all %}
+    {% if user.is_authenticated or comment.approved_comment %}
+    {{comment.created_date}}
+    {% if not comment.approved_comment %}
+    <a class="btn btn-default" href="{% url 'app:comment_remove' pk=comment.pk %}"> <span class="glyphicon glyphicon-remove-circle"></span> remove </a>
+    <a class="btn btn-primary" href="{% url 'app:comment_approve' pk=comment.pk %}"> <span class="glyphicon glyphicon-ok"> </span> Approve </a>
+    {% endif %}
+
+    <p>{{comment.text|safe|linebreaks}}</p>
+    <p>Posted by: {{comment.author}}</p>
+
+    {% endif %}
+    <!-- if no comments -->
+    {% empty %}
+    <p>No comments!</p>
+    {% endfor %}
+  </div>
+
+  <div class="">
+    <a class="btn btn-primary btn-comment ml-auto" href="{% url 'app:add_comment_to_post' pk=post.pk %}">Add comment</a>
+  </div>
+</div>
+
+
+{% endblock %}
